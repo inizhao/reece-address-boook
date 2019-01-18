@@ -1,0 +1,33 @@
+{
+    "generator-jhipster": {
+        "promptValues": {
+            "packageName": "com.reece.addressbook"
+        },
+        "jhipsterVersion": "5.7.2",
+        "applicationType": "monolith",
+        "baseName": "reeceaddressbook",
+        "packageName": "com.reece.addressbook",
+        "packageFolder": "com/reece/addressbook",
+        "serverPort": "8080",
+        "authenticationType": "jwt",
+        "cacheProvider": "ehcache",
+        "enableHibernateCache": true,
+        "websocket": false,
+        "databaseType": "sql",
+        "devDatabaseType": "h2Memory",
+        "prodDatabaseType": "mysql",
+        "searchEngine": false,
+        "messageBroker": false,
+        "serviceDiscoveryType": false,
+        "buildTool": "gradle",
+        "enableSwaggerCodegen": false,
+        "jwtSecretKey": "YmM5YTMxMzgyMjUxYWI0MWQ0MDcyMTVmMjIwYjM3N2JlZDE5MWU3NzlmYzcyZjljZWJiZDgwYTBhM2E5MGMzYzg4NTU4MjdkOTdiY2E4MDUzMTcxN2RiMzM4ODZjZWNkY2FmOWI4MTUxYWY3NWZkZmQwMDVkNmQyM2E2MDZkMDE=",
+        "clientFramework": "angularX",
+        "useSass": true,
+        "clientPackageManager": "npm",
+        "testFrameworks": [],
+        "jhiPrefix": "jhi",
+        "otherModules": [],
+        "enableTranslation": false
+    }
+}
