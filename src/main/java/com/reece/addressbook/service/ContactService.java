@@ -30,12 +30,11 @@ public class ContactService {
     private final Logger log = LoggerFactory.getLogger(ContactService.class);
 
     private final ContactRepository contactRepository;
+    private final AddressBookRepository addressBookRepository;
 
-    @Autowired
-    private AddressBookRepository addressBookRepository;
-
-    public ContactService(ContactRepository contactRepository) {
+    public ContactService(ContactRepository contactRepository, AddressBookRepository addressBookRepository) {
         this.contactRepository = contactRepository;
+        this.addressBookRepository = addressBookRepository;
     }
 
     /**
@@ -93,9 +92,6 @@ public class ContactService {
     @Transactional(readOnly = true)
     public List<Contact> findAllContactsByAddressBook(Long addressBookId) {
         return contactRepository.findAllByAddressBook_Id(addressBookId);
-
-
-
     }
 
     private static <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {

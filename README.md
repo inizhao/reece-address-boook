@@ -8,8 +8,20 @@
 
 #### Node 10.15.0
 
+## Repository and build
+
+### Clone the project from Github
+
+    git clone https://github.com/inizhao/reece-address-boook.git
+
+### Build the project with Gradle
+
+    ./gradlew
+
+## How to
+
 1. I used JHipster 5.7.2 to help generating the boilerplate and scaffolding, thus it has dependency on Node as backend project.
-   And the code has a lot more code than what the basic Acceptance Criteria asked.
+   And the project has a lot more code than what the basic Acceptance Criteria asked.
 
 2. The project comes with dependencies on Node
 
@@ -20,23 +32,10 @@
 
 5. H2 in memory database: http://localhost:8080/h2-console
 
-6. API Authentication JWT. Default user name "admin", password "admin". This credential can be used to get the authentication token.
+6. API Authentication uses JWT. Default user name "admin", password "admin". This credential can be used to get the authentication token.
 
 7. To access the API, set the following value in the request header "Authorization":
    Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImF1dGgiOiJST0xFX0FETUlOLFJPTEVfVVNFUiIsImV4cCI6MTU0ODA0NDMzNX0.l1_k8k7X6IATlVT3ZEA4fxl7C6aMy5fO1lE12jbb0ASZF8A93H_oE_PdW-I69hwHy3dbSNUko9wt-vBwRxVBFA
-
-## Development
-
-Before you can build this project, you must install and configure the following dependencies on your machine:
-
-1.  [Node.js][]: We use Node to run a development web server and build the project.
-
-    npm install
-
-Run the following commands in two separate terminals to create a blissful development experience where your browser
-auto-refreshes when files change on your hard drive.
-
-    ./gradlew
 
 ## Acceptance Criteria
 
@@ -79,9 +78,9 @@ auto-refreshes when files change on your hard drive.
 
 ## Areas for improvement if having more time
 
-1. Bring DTO for each endpoint
+1. Introducing DTO for AddressBook
 2. I used the dev_data.xml for both dev initial data and integration test data for timely manner.
-   Ideally integration test could have it's own test data configuration.
+   Ideally integration test should have it's own test data configuration. Otherwise change of initial data could break test.
 3. Add user authorisation check to ensure that user can only access or handle address book which are allowed to.
 
 ## Testing
