@@ -16,7 +16,7 @@ import java.util.Objects;
  */
 @Entity
 @Table(name = "contact")
-@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+//@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class Contact implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -37,10 +37,16 @@ public class Contact implements Serializable {
     private String phone;
 
     @NotNull
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "address_book_id")
     @JsonIgnoreProperties("contacts")
     private AddressBook addressBook;
+
+    @PreRemove
+    private void removeFromAddressBook(){
+        addressBook.getContacts().remove(this);
+    }
+
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {

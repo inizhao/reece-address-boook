@@ -1,7 +1,6 @@
 package com.reece.addressbook.web.rest;
 
 import com.reece.addressbook.ReeceaddressbookApp;
-
 import com.reece.addressbook.domain.AddressBook;
 import com.reece.addressbook.domain.Contact;
 import com.reece.addressbook.domain.User;
@@ -9,8 +8,8 @@ import com.reece.addressbook.repository.AddressBookRepository;
 import com.reece.addressbook.repository.ContactRepository;
 import com.reece.addressbook.repository.UserRepository;
 import com.reece.addressbook.service.ContactService;
+import com.reece.addressbook.service.dto.ContactDTO;
 import com.reece.addressbook.web.rest.errors.ExceptionTranslator;
-
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -30,12 +29,16 @@ import org.springframework.validation.Validator;
 import javax.persistence.EntityManager;
 import java.util.List;
 
-
 import static com.reece.addressbook.web.rest.TestUtil.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
  * Test class for the ContactResource REST controller.
@@ -103,6 +106,16 @@ public class ContactResourceIntTest {
         return contact;
     }
 
+    private ContactDTO createContactDto(String name, String phone) {
+        ContactDTO contactDTO = new ContactDTO();
+        contactDTO
+            .setAddressBookId(1l)
+        ;
+        contactDTO.setName(name);
+        contactDTO.setPhone(phone);
+        return contactDTO;
+    }
+
     @Before
     public void initTest() {
         contact = createEntity(em);
@@ -116,7 +129,7 @@ public class ContactResourceIntTest {
         // Create the Contact
         restContactMockMvc.perform(post("/api/contacts")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(contact)))
+            .content(TestUtil.convertObjectToJsonBytes(createContactDto(DEFAULT_NAME, DEFAULT_PHONE))))
             .andExpect(status().isCreated());
 
         // Validate the Contact in the database
@@ -224,21 +237,18 @@ public class ContactResourceIntTest {
     @Transactional
     public void updateContact() throws Exception {
         // Initialize the database
-        contactService.save(contact);
+        Contact contact = contactService.save(createContactDto("kello kitty", "0488777666"));
 
         int databaseSizeBeforeUpdate = contactRepository.findAll().size();
 
         // Update the contact
-        Contact updatedContact = contactRepository.findById(contact.getId()).get();
-        // Disconnect from session so that the updates on updatedContact are not directly saved in db
-        em.detach(updatedContact);
-        updatedContact
-            .name(UPDATED_NAME)
-            .phone(UPDATED_PHONE);
+        contact = contactRepository.findById(contact.getId()).get();
 
+        ContactDTO updatedContactDto=createContactDto(UPDATED_NAME, UPDATED_PHONE);
+        updatedContactDto.setId(contact.getId());
         restContactMockMvc.perform(put("/api/contacts")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(updatedContact)))
+            .content(TestUtil.convertObjectToJsonBytes(updatedContactDto)))
             .andExpect(status().isOk());
 
         // Validate the Contact in the database
@@ -271,12 +281,12 @@ public class ContactResourceIntTest {
     @Transactional
     public void deleteContact() throws Exception {
         // Initialize the database
-        contactService.save(contact);
+        Contact savedContact = contactService.save(createContactDto("kelly minney", "9387736265"));
 
         int databaseSizeBeforeDelete = contactRepository.findAll().size();
 
         // Get the contact
-        restContactMockMvc.perform(delete("/api/contacts/{id}", contact.getId())
+        restContactMockMvc.perform(delete("/api/contacts/{id}", savedContact.getId())
             .accept(TestUtil.APPLICATION_JSON_UTF8))
             .andExpect(status().isOk());
 
@@ -300,7 +310,7 @@ public class ContactResourceIntTest {
         assertThat(contact1).isNotEqualTo(contact2);
     }
 
-    public  AddressBook createAddressBook(String name) {
+    public AddressBook createAddressBook(String name) {
         User user = new User();
         user.setLogin("johndoe");
         user.setPassword(RandomStringUtils.random(60));

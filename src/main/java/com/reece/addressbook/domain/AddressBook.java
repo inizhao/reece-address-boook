@@ -38,12 +38,10 @@ public class AddressBook implements Serializable {
     @NotNull
     @ManyToOne
     @JoinColumn(name = "user_id")
-//    @JsonIgnore
     private User user;
 
     @NotNull
-    @Valid
-    @OneToMany(mappedBy = "addressBook", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "addressBook", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @LazyCollection(LazyCollectionOption.FALSE)
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<Contact> contacts = new HashSet<>();
