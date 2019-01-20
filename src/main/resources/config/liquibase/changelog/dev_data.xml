@@ -10,9 +10,13 @@
 
 
         <loadData encoding="UTF-8"
-                  file="config/liquibase/address_book.csv"
+                  file="config/liquibase/address_books.csv"
                   separator=";"
                   tableName="address_book"/>
 
+        <loadData encoding="UTF-8"
+                  file="config/liquibase/contacts.csv"
+                  separator=";"
+                  tableName="contact"/>
     </changeSet>
 </databaseChangeLog>

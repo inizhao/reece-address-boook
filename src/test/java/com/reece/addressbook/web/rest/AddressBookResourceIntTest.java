@@ -6,6 +6,7 @@ import com.reece.addressbook.domain.AddressBook;
 import com.reece.addressbook.repository.AddressBookRepository;
 import com.reece.addressbook.repository.UserRepository;
 import com.reece.addressbook.service.AddressBookService;
+import com.reece.addressbook.service.ContactService;
 import com.reece.addressbook.web.rest.errors.ExceptionTranslator;
 
 import org.junit.Before;
@@ -55,6 +56,9 @@ public class AddressBookResourceIntTest {
     private AddressBookService addressBookService;
 
     @Autowired
+    private ContactService contactService;
+
+    @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
 
     @Autowired
@@ -76,7 +80,7 @@ public class AddressBookResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final AddressBookResource addressBookResource = new AddressBookResource(addressBookService);
+        final AddressBookResource addressBookResource = new AddressBookResource(addressBookService, contactService);
         this.restAddressBookMockMvc = MockMvcBuilders.standaloneSetup(addressBookResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
@@ -178,6 +182,53 @@ public class AddressBookResourceIntTest {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.id").value(addressBook.getId().intValue()))
             .andExpect(jsonPath("$.name").value(DEFAULT_NAME.toString()));
+    }
+
+    // Acceptance Criteria "Users should be able to retrieve all contacts in an address book"
+    @Test
+    @Transactional
+    public void getAllContactsWithInAddressBook() throws Exception {
+        restAddressBookMockMvc.perform(
+            get("/api/address-books/{id}/contacts", "1").param("unique", "false"))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(jsonPath("$.[2]").exists())
+            .andExpect(jsonPath("$.[3]").doesNotExist())
+        ;
+    }
+
+    // Acceptance Criteria "Users should be able to retireve a unique set of all contacts across multiple address books"
+    @Test
+    @Transactional
+    public void getAllContactsWithInMultiAddressBookUnique() throws Exception {
+        restAddressBookMockMvc.perform(
+            get("/api/address-books/{id}/contacts", "1,2").param("unique", "true"))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(jsonPath("$.[3]").exists())
+            .andExpect(jsonPath("$.[4]").doesNotExist())
+        ;
+    }
+
+    @Test
+    @Transactional
+    public void getAllContactsWithInMultiAddressBook() throws Exception {
+        restAddressBookMockMvc.perform(
+            get("/api/address-books/{id}/contacts", "1,2").param("unique", "false"))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(jsonPath("$.[5]").exists())
+            .andExpect(jsonPath("$.[6]").doesNotExist())
+        ;
+    }
+
+    @Test
+    @Transactional
+    public void getAllContactsWithInMultiAddressBookBadRequest() throws Exception {
+        restAddressBookMockMvc.perform(
+            get("/api/address-books/{id}/contacts", "1,p").param("unique", "false"))
+            .andExpect(status().isBadRequest())
+        ;
     }
 
     @Test

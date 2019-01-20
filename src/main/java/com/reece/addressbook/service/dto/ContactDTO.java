@@ -4,6 +4,7 @@ import javax.validation.constraints.NotNull;
 
 public class ContactDTO {
     private Long id;
+    @NotNull
     private Long addressBookId;
     @NotNull
     private String name;

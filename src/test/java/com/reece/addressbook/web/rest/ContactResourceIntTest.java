@@ -142,6 +142,44 @@ public class ContactResourceIntTest {
 
     @Test
     @Transactional
+    public void createContactWithNonExistAddressBook() throws Exception {
+        int databaseSizeBeforeCreate = contactRepository.findAll().size();
+
+        ContactDTO contactDTO = createContactDto(DEFAULT_NAME, DEFAULT_PHONE);
+        contactDTO.setAddressBookId(99l);
+
+        // Create the Contact
+        restContactMockMvc.perform(post("/api/contacts")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(contactDTO)))
+            .andExpect(status().isBadRequest());
+
+        // Validate the Contact in the database
+        List<Contact> contactList = contactRepository.findAll();
+        assertThat(contactList).hasSize(databaseSizeBeforeCreate);
+    }
+
+    @Test
+    @Transactional
+    public void createContactWithoutAddressBookId() throws Exception {
+        int databaseSizeBeforeCreate = contactRepository.findAll().size();
+
+        ContactDTO contactDTO = createContactDto(DEFAULT_NAME, DEFAULT_PHONE);
+        contactDTO.setAddressBookId(null);
+
+        // Create the Contact
+        restContactMockMvc.perform(post("/api/contacts")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(contactDTO)))
+            .andExpect(status().isBadRequest());
+
+        // Validate the Contact in the database
+        List<Contact> contactList = contactRepository.findAll();
+        assertThat(contactList).hasSize(databaseSizeBeforeCreate);
+    }
+
+    @Test
+    @Transactional
     public void createContactWithExistingId() throws Exception {
         int databaseSizeBeforeCreate = contactRepository.findAll().size();
 

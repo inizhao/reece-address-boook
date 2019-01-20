@@ -1,179 +1,88 @@
 # reeceaddressbook
 
-This application was generated using JHipster 5.7.2, you can find documentation and help at [https://www.jhipster.tech/documentation-archive/v5.7.2](https://www.jhipster.tech/documentation-archive/v5.7.2).
+Environment:
+JAVA 1.8
+Gradle 2.8
+Node 10.15.0
+
+1. I used JHipster 5.7.2 to help generating the boilerplate and scaffolding, thus it has dependency on Node as backend project.
+   And the code has a lot more code than what the basic Acceptance Criteria asked.
+
+2. The project comes with dependencies on Node
+
+3. Swagger for the REST API:
+   http://localhost:8080/#/admin/docs
+
+4. By running ./gradlew it launch the dev profile, which use H2 in memory database locally.
+
+5. H2 in memory database: http://localhost:8080/h2-console
+
+6. API Authentication JWT. Default user name "admin", password "admin". This credential can be used to get the authentication token.
+
+7. To access the API, set the following value in the request header "Authorization":
+   Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImF1dGgiOiJST0xFX0FETUlOLFJPTEVfVVNFUiIsImV4cCI6MTU0ODA0NDMzNX0.l1_k8k7X6IATlVT3ZEA4fxl7C6aMy5fO1lE12jbb0ASZF8A93H_oE_PdW-I69hwHy3dbSNUko9wt-vBwRxVBFA
 
 ## Development
 
 Before you can build this project, you must install and configure the following dependencies on your machine:
 
 1.  [Node.js][]: We use Node to run a development web server and build the project.
-    Depending on your system, you can install Node either from source or as a pre-packaged bundle.
-
-After installing Node, you should be able to run the following command to install development tools.
-You will only need to run this command when dependencies change in [package.json](package.json).
 
     npm install
-
-We use npm scripts and [Webpack][] as our build system.
 
 Run the following commands in two separate terminals to create a blissful development experience where your browser
 auto-refreshes when files change on your hard drive.
 
     ./gradlew
-    npm start
 
-Npm is also used to manage CSS and JavaScript dependencies used in this application. You can upgrade dependencies by
-specifying a newer version in [package.json](package.json). You can also run `npm update` and `npm install` to manage dependencies.
-Add the `help` flag on any command to see how you can use it. For example, `npm help update`.
+##Acceptance Criteria
 
-The `npm run` command will list all of the scripts available to run for this project.
+### There are already two existing address books initialised in memory
 
-### Service workers
+1. There are two initial address book with ID 1 and 2. Each has 3 contacts.
 
-Service workers are commented by default, to enable them please uncomment the following code.
+### Users should be able to add a new contact entry to an existing address book
 
--   The service worker registering script in index.html
+1. POST Endpoint: http://localhost:8080/api/contacts
+2. Test data:
+   {
+   "addressBookId": 2,
+   "name": "Forrest Gum",
+   "phone": "0409090909"
+   }
 
-```html
-<script>
-    if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('./service-worker.js').then(function() {
-            console.log('Service Worker Registered');
-        });
-    }
-</script>
-```
+### Users should be able to remove an existing contact entry from an existing address book
 
-Note: workbox creates the respective service worker and dynamically generate the `service-worker.js`
+1. DELETE Endpoint: http://localhost:8080/api/contacts/{id}
+2. Test data: http://localhost:8080/api/contacts/3
 
-### Managing dependencies
+### Users should be able to retireve all contacts in an address book
 
-For example, to add [Leaflet][] library as a runtime dependency of your application, you would run following command:
+1. GET Endpoint: http://localhost:8080/api/address-books/{addressBookId}/contacts?unique=false
+2. Test data: http://localhost:8080/api/address-books/1/contacts?unique=true
 
-    npm install --save --save-exact leaflet
+### Users should be able to retireve a unique set of all contacts across multiple address books
 
-To benefit from TypeScript type definitions from [DefinitelyTyped][] repository in development, you would run following command:
+1. GET Endpoint: http://localhost:8080/api/address-books/{addressBookIds}/contacts?unique=true
+2. The addressBookIds is comma separated string like "1,2"
+3. Test data: http://localhost:8080/api/address-books/1%2C2/contacts?unique=true
 
-    npm install --save-dev --save-exact @types/leaflet
+## Assumptions
 
-Then you would import the JS and CSS files specified in library's installation instructions so that [Webpack][] knows about them:
-Edit [src/main/webapp/app/vendor.ts](src/main/webapp/app/vendor.ts) file:
+1. For the Acceptance criteria "Users should be able to retireve a unique set of all contacts across multiple address books". The unique
+   logic is applied against the phone number.
+2. Duplicate address book names are allowed
+3. Duplicate contact names are allowed.
 
-```
-import 'leaflet/dist/leaflet.js';
-```
+## Areas for improvement if having more time
 
-Edit [src/main/webapp/content/css/vendor.css](src/main/webapp/content/css/vendor.css) file:
-
-```
-@import '~leaflet/dist/leaflet.css';
-```
-
-Note: there are still few other things remaining to do for Leaflet that we won't detail here.
-
-For further instructions on how to develop with JHipster, have a look at [Using JHipster in development][].
-
-### Using angular-cli
-
-You can also use [Angular CLI][] to generate some custom client code.
-
-For example, the following command:
-
-    ng generate component my-component
-
-will generate few files:
-
-    create src/main/webapp/app/my-component/my-component.component.html
-    create src/main/webapp/app/my-component/my-component.component.ts
-    update src/main/webapp/app/app.module.ts
-
-## Building for production
-
-To optimize the reeceaddressbook application for production, run:
-
-    ./gradlew -Pprod clean bootWar
-
-This will concatenate and minify the client CSS and JavaScript files. It will also modify `index.html` so it references these new files.
-To ensure everything worked, run:
-
-    java -jar build/libs/*.war
-
-Then navigate to [http://localhost:8080](http://localhost:8080) in your browser.
-
-Refer to [Using JHipster in production][] for more details.
+1. Bring DTO for each endpoint
+2. I used the dev_data.xml for both dev initial data and integration test data for timely manner.
+   Ideally integration test could have it's own test data configuration.
+3. Add user authorisation check to ensure that user can only access or handle address book which are allowed to.
 
 ## Testing
 
 To launch your application's tests, run:
 
     ./gradlew test
-
-### Client tests
-
-Unit tests are run by [Jest][] and written with [Jasmine][]. They're located in [src/test/javascript/](src/test/javascript/) and can be run with:
-
-    npm test
-
-For more information, refer to the [Running tests page][].
-
-### Code quality
-
-Sonar is used to analyse code quality. You can start a local Sonar server (accessible on http://localhost:9001) with:
-
-```
-docker-compose -f src/main/docker/sonar.yml up -d
-```
-
-Then, run a Sonar analysis:
-
-```
-./gradlew -Pprod clean test sonarqube
-```
-
-For more information, refer to the [Code quality page][].
-
-## Using Docker to simplify development (optional)
-
-You can use Docker to improve your JHipster development experience. A number of docker-compose configuration are available in the [src/main/docker](src/main/docker) folder to launch required third party services.
-
-For example, to start a mysql database in a docker container, run:
-
-    docker-compose -f src/main/docker/mysql.yml up -d
-
-To stop it and remove the container, run:
-
-    docker-compose -f src/main/docker/mysql.yml down
-
-You can also fully dockerize your application and all the services that it depends on.
-To achieve this, first build a docker image of your app by running:
-
-    ./gradlew bootWar -Pprod jibDockerBuild
-
-Then run:
-
-    docker-compose -f src/main/docker/app.yml up -d
-
-For more information refer to [Using Docker and Docker-Compose][], this page also contains information on the docker-compose sub-generator (`jhipster docker-compose`), which is able to generate docker configurations for one or several JHipster applications.
-
-## Continuous Integration (optional)
-
-To configure CI for your project, run the ci-cd sub-generator (`jhipster ci-cd`), this will let you generate configuration files for a number of Continuous Integration systems. Consult the [Setting up Continuous Integration][] page for more information.
-
-[jhipster homepage and latest documentation]: https://www.jhipster.tech
-[jhipster 5.7.2 archive]: https://www.jhipster.tech/documentation-archive/v5.7.2
-[using jhipster in development]: https://www.jhipster.tech/documentation-archive/v5.7.2/development/
-[using docker and docker-compose]: https://www.jhipster.tech/documentation-archive/v5.7.2/docker-compose
-[using jhipster in production]: https://www.jhipster.tech/documentation-archive/v5.7.2/production/
-[running tests page]: https://www.jhipster.tech/documentation-archive/v5.7.2/running-tests/
-[code quality page]: https://www.jhipster.tech/documentation-archive/v5.7.2/code-quality/
-[setting up continuous integration]: https://www.jhipster.tech/documentation-archive/v5.7.2/setting-up-ci/
-[node.js]: https://nodejs.org/
-[yarn]: https://yarnpkg.org/
-[webpack]: https://webpack.github.io/
-[angular cli]: https://cli.angular.io/
-[browsersync]: http://www.browsersync.io/
-[jest]: https://facebook.github.io/jest/
-[jasmine]: http://jasmine.github.io/2.0/introduction.html
-[protractor]: https://angular.github.io/protractor/
-[leaflet]: http://leafletjs.com/
-[definitelytyped]: http://definitelytyped.org/
