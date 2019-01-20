@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
@@ -98,23 +99,7 @@ public class ContactResource {
         return contactService.findAll();
     }
 
-    @GetMapping("/contacts/byAddressBookUnique/{addressBookIdsString}")
-    @Timed
-    public List<Contact> getAllUniqueContactsByAddressBookIds(@PathVariable String addressBookIdsString) {
-        List<Long> addressBookIds = Arrays.asList(addressBookIdsString.split(","))
-            .stream()
-            .map(idString -> {
-                return Long.valueOf(idString);
-            })
-            .collect(Collectors.toList());
-        return contactService.findAllUniqueContactsByAddressBook(addressBookIds);
-    }
 
-    @GetMapping("/contacts/byAddressBook/{addressBookId}")
-    @Timed
-    public List<Contact> getAllContactsByAddressBookIds(@PathVariable String addressBookId) {
-        return contactService.findAllContactsByAddressBook(Long.valueOf(addressBookId));
-    }
 
     /**
      * GET  /contacts/:id : get the "id" contact.

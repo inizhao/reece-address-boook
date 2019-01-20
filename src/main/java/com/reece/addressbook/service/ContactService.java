@@ -72,7 +72,7 @@ public class ContactService {
     }
 
     @Transactional(readOnly = true)
-    public List<Contact> findAllUniqueContactsByAddressBook(List<Long> addressBookIds) {
+    public List<Contact> findAllUniqueContactsByAddressBook(List<Long> addressBookIds, Boolean unique) {
         List<Contact> contactList =
             addressBookIds.stream().map(
                 addressBookId -> {
@@ -82,10 +82,12 @@ public class ContactService {
                 .flatMap(List::stream)
                 .collect(Collectors.toList());
 
-        List<Contact> distinctContacts = contactList.stream().filter(distinctByKey(p -> p.getPhone()))
-            .collect(Collectors.toList());
-
-        return distinctContacts;
+        if(unique) {
+            List<Contact> distinctContacts = contactList.stream().filter(distinctByKey(p -> p.getPhone()))
+                .collect(Collectors.toList());
+            return distinctContacts;
+        }
+        return contactList;
     }
 
     @Transactional(readOnly = true)

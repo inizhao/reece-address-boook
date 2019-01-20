@@ -2,12 +2,15 @@ package com.reece.addressbook.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import com.reece.addressbook.domain.AddressBook;
+import com.reece.addressbook.domain.Contact;
 import com.reece.addressbook.service.AddressBookService;
+import com.reece.addressbook.service.ContactService;
 import com.reece.addressbook.web.rest.errors.BadRequestAlertException;
 import com.reece.addressbook.web.rest.util.HeaderUtil;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,8 +18,10 @@ import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * REST controller for managing AddressBook.
@@ -30,9 +35,12 @@ public class AddressBookResource {
     private static final String ENTITY_NAME = "addressBook";
 
     private final AddressBookService addressBookService;
+    private final ContactService contactService;
 
-    public AddressBookResource(AddressBookService addressBookService) {
+
+    public AddressBookResource(AddressBookService addressBookService, ContactService contactService) {
         this.addressBookService = addressBookService;
+        this.contactService = contactService;
     }
 
     /**
@@ -101,6 +109,26 @@ public class AddressBookResource {
         log.debug("REST request to get AddressBook : {}", id);
         Optional<AddressBook> addressBook = addressBookService.findOne(id);
         return ResponseUtil.wrapOrNotFound(addressBook);
+    }
+
+    @GetMapping("/address-books/{addressBookIdsString}/contacts")
+    @Timed
+    public List<Contact> getAllUniqueContactsByAddressBookIds(
+        @PathVariable String addressBookIdsString,
+        @RequestParam("unique") boolean unique
+    ) {
+        try {
+            List<Long> addressBookIds = Arrays.asList(addressBookIdsString.split(","))
+                .stream()
+                .map(idString -> {
+                    return Long.valueOf(idString);
+                })
+                .collect(Collectors.toList());
+            return contactService.findAllUniqueContactsByAddressBook(addressBookIds, unique);
+
+        } catch (NumberFormatException exception) {
+            throw new BadRequestAlertException("Invalid address book id.", "Address Book ID", "invalidAddressBookId");
+        }
     }
 
     /**
