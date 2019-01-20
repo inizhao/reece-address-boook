@@ -4,6 +4,7 @@ import com.reece.addressbook.ReeceaddressbookApp;
 
 import com.reece.addressbook.domain.AddressBook;
 import com.reece.addressbook.repository.AddressBookRepository;
+import com.reece.addressbook.repository.UserRepository;
 import com.reece.addressbook.service.AddressBookService;
 import com.reece.addressbook.web.rest.errors.ExceptionTranslator;
 
@@ -48,6 +49,9 @@ public class AddressBookResourceIntTest {
     private AddressBookRepository addressBookRepository;
 
     @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
     private AddressBookService addressBookService;
 
     @Autowired
@@ -81,15 +85,10 @@ public class AddressBookResourceIntTest {
             .setValidator(validator).build();
     }
 
-    /**
-     * Create an entity for this test.
-     *
-     * This is a static method, as tests for other entities might also need it,
-     * if they test an entity which requires the current entity.
-     */
-    public static AddressBook createEntity(EntityManager em) {
+    public  AddressBook createEntity(EntityManager em) {
         AddressBook addressBook = new AddressBook()
-            .name(DEFAULT_NAME);
+            .name(DEFAULT_NAME)
+            .user(userRepository.getOne(3l));
         return addressBook;
     }
 
@@ -166,7 +165,7 @@ public class AddressBookResourceIntTest {
             .andExpect(jsonPath("$.[*].id").value(hasItem(addressBook.getId().intValue())))
             .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME.toString())));
     }
-    
+
     @Test
     @Transactional
     public void getAddressBook() throws Exception {

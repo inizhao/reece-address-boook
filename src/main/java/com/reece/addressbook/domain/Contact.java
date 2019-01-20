@@ -1,5 +1,6 @@
 package com.reece.addressbook.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -35,7 +36,9 @@ public class Contact implements Serializable {
     @Column(name = "phone", length = 20, nullable = false)
     private String phone;
 
-    @ManyToOne
+    @NotNull
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "address_book_id")
     @JsonIgnoreProperties("contacts")
     private AddressBook addressBook;
 

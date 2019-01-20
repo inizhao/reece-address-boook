@@ -4,8 +4,11 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
+import javax.validation.Valid;
 import javax.validation.constraints.*;
 
 import java.io.Serializable;
@@ -32,11 +35,16 @@ public class AddressBook implements Serializable {
     @Column(name = "name", length = 20, nullable = false)
     private String name;
 
+    @NotNull
     @ManyToOne
-    @JsonIgnoreProperties("")
+    @JoinColumn(name = "user_id")
+//    @JsonIgnore
     private User user;
 
-    @OneToMany(mappedBy = "addressBook")
+    @NotNull
+    @Valid
+    @OneToMany(mappedBy = "addressBook", cascade = CascadeType.ALL)
+    @LazyCollection(LazyCollectionOption.FALSE)
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<Contact> contacts = new HashSet<>();
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove

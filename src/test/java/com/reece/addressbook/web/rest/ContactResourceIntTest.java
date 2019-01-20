@@ -2,11 +2,16 @@ package com.reece.addressbook.web.rest;
 
 import com.reece.addressbook.ReeceaddressbookApp;
 
+import com.reece.addressbook.domain.AddressBook;
 import com.reece.addressbook.domain.Contact;
+import com.reece.addressbook.domain.User;
+import com.reece.addressbook.repository.AddressBookRepository;
 import com.reece.addressbook.repository.ContactRepository;
+import com.reece.addressbook.repository.UserRepository;
 import com.reece.addressbook.service.ContactService;
 import com.reece.addressbook.web.rest.errors.ExceptionTranslator;
 
+import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -51,6 +56,12 @@ public class ContactResourceIntTest {
     private ContactRepository contactRepository;
 
     @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private AddressBookRepository addressBookRepository;
+
+    @Autowired
     private ContactService contactService;
 
     @Autowired
@@ -84,16 +95,11 @@ public class ContactResourceIntTest {
             .setValidator(validator).build();
     }
 
-    /**
-     * Create an entity for this test.
-     *
-     * This is a static method, as tests for other entities might also need it,
-     * if they test an entity which requires the current entity.
-     */
-    public static Contact createEntity(EntityManager em) {
+    private Contact createEntity(EntityManager em) {
         Contact contact = new Contact()
             .name(DEFAULT_NAME)
-            .phone(DEFAULT_PHONE);
+            .phone(DEFAULT_PHONE)
+            .addressBook(addressBookRepository.getOne(1l));
         return contact;
     }
 
@@ -292,5 +298,22 @@ public class ContactResourceIntTest {
         assertThat(contact1).isNotEqualTo(contact2);
         contact1.setId(null);
         assertThat(contact1).isNotEqualTo(contact2);
+    }
+
+    public  AddressBook createAddressBook(String name) {
+        User user = new User();
+        user.setLogin("johndoe");
+        user.setPassword(RandomStringUtils.random(60));
+        user.setActivated(true);
+        user.setEmail("johndoe@localhost");
+        user.setFirstName("john");
+        user.setLastName("doe");
+        user.setImageUrl("http://placehold.it/50x50");
+        user.setLangKey("en");
+
+        user = userRepository.save(user);
+        return new AddressBook()
+            .name(name)
+            .user(user);
     }
 }
