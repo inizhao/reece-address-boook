@@ -25,14 +25,14 @@
 
 2. The project comes with dependencies on Node
 
-3. Swagger for the REST API:
+3. Authentication uses JWT. To browse the swagger or other UI component, use username "admin", password "admin".
+
+4. Swagger for the REST API:
    http://localhost:8080/#/admin/docs
 
-4. By running ./gradlew it launch the dev profile, which use H2 in memory database locally.
+5. By running ./gradlew it launch the dev profile, which use H2 in memory database locally.
 
-5. H2 in memory database: http://localhost:8080/h2-console
-
-6. API Authentication uses JWT. Default user name "admin", password "admin". This credential can be used to get the authentication token.
+6. H2 in memory database: http://localhost:8080/h2-console
 
 7. To access the API, set the following value in the request header "Authorization":
    Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImF1dGgiOiJST0xFX0FETUlOLFJPTEVfVVNFUiIsImV4cCI6MTU0ODA0NDMzNX0.l1_k8k7X6IATlVT3ZEA4fxl7C6aMy5fO1lE12jbb0ASZF8A93H_oE_PdW-I69hwHy3dbSNUko9wt-vBwRxVBFA
