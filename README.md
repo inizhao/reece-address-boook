@@ -1,9 +1,12 @@
-# reeceaddressbook
+# reece address book
 
-Environment:
-JAVA 1.8
-Gradle 2.8
-Node 10.15.0
+### Environment:
+
+#### JAVA 1.8
+
+#### Gradle 2.8
+
+#### Node 10.15.0
 
 1. I used JHipster 5.7.2 to help generating the boilerplate and scaffolding, thus it has dependency on Node as backend project.
    And the code has a lot more code than what the basic Acceptance Criteria asked.
@@ -35,7 +38,7 @@ auto-refreshes when files change on your hard drive.
 
     ./gradlew
 
-##Acceptance Criteria
+## Acceptance Criteria
 
 ### There are already two existing address books initialised in memory
 
