@@ -18,7 +18,11 @@
 
     ./gradlew
 
-## How to
+### Swagger for the REST API:(username "admin", password "admin")
+
+    http://localhost:8080/#/admin/docs
+
+## Some thoughts
 
 1. I used JHipster 5.7.2 to help generating the boilerplate and scaffolding, thus it has dependency on Node as backend project.
    And the project has a lot more code than what the basic Acceptance Criteria asked.
@@ -27,21 +31,31 @@
 
 3. Authentication uses JWT. To browse the swagger or other UI component, use username "admin", password "admin".
 
-4. Swagger for the REST API:
-   http://localhost:8080/#/admin/docs
+4. By running ./gradlew it launch the dev profile, which use H2 in memory database locally.
 
-5. By running ./gradlew it launch the dev profile, which use H2 in memory database locally.
+5. H2 in memory database: http://localhost:8080/h2-console
 
-6. H2 in memory database: http://localhost:8080/h2-console
-
-7. To access the API, set the following value in the request header "Authorization":
+6. To access the API, set the following value in the request header "Authorization":
    Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImF1dGgiOiJST0xFX0FETUlOLFJPTEVfVVNFUiIsImV4cCI6MTU0ODA0NDMzNX0.l1_k8k7X6IATlVT3ZEA4fxl7C6aMy5fO1lE12jbb0ASZF8A93H_oE_PdW-I69hwHy3dbSNUko9wt-vBwRxVBFA
+
+7. I didn't delete those front end code and endpoints which are not required for this task, but some of them are handy for development.
+
+## Assumptions
+
+1. For the Acceptance criteria "Users should be able to retireve a unique set of all contacts across multiple address books".
+   The unique logic is applied against the phone number, and will keep one of the records having same phone number.
+2. Duplicate address book names are allowed
+3. Duplicate contact names are allowed.
 
 ## Acceptance Criteria
 
 ### There are already two existing address books initialised in memory
 
 1. There are two initial address book with ID 1 and 2. Each has 3 contacts.
+
+### Address book should hold name and phone numbers of contact entries
+
+1. GET Endpoint: http://localhost:8080/api/address-books
 
 ### Users should be able to add a new contact entry to an existing address book
 
@@ -69,13 +83,6 @@
 2. The addressBookIds is comma separated string like "1,2"
 3. Test data: http://localhost:8080/api/address-books/1%2C2/contacts?unique=true
 
-## Assumptions
-
-1. For the Acceptance criteria "Users should be able to retireve a unique set of all contacts across multiple address books". The unique
-   logic is applied against the phone number.
-2. Duplicate address book names are allowed
-3. Duplicate contact names are allowed.
-
 ## Areas for improvement if having more time
 
 1. Introducing DTO for AddressBook
@@ -85,6 +92,6 @@
 
 ## Testing
 
-To launch your application's tests, run:
+To launch application's tests, run:
 
     ./gradlew test
